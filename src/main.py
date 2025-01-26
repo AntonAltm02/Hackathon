@@ -25,6 +25,17 @@ if __name__ == '__main__':
         gray_img = cropped_images_show.convert("L")
         plt.imshow(gray_img, cmap='gray')
 
+    """
+    Full images
+    """
+    full_images = dicom_info[dicom_info.SeriesDescription == "full mammogram images"].image_path
+    full_images.head()
+    full_images = cropped_images.apply(lambda x: x.replace('CBIS-DDSM/jpeg', image_dir))
+    full_images.head()
+    for file in full_images[0:10]:
+        full_images_show = PIL.Image.open(file)
+        gray_img = full_images_show.convert("L")
+        plt.imshow(gray_img, cmap='gray')
 
 
     print("Stop here")
