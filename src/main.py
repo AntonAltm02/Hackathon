@@ -30,12 +30,23 @@ if __name__ == '__main__':
     """
     full_images = dicom_info[dicom_info.SeriesDescription == "full mammogram images"].image_path
     full_images.head()
-    full_images = cropped_images.apply(lambda x: x.replace('CBIS-DDSM/jpeg', image_dir))
+    full_images = full_images.apply(lambda x: x.replace('CBIS-DDSM/jpeg', image_dir))
     full_images.head()
     for file in full_images[0:10]:
         full_images_show = PIL.Image.open(file)
         gray_img = full_images_show.convert("L")
         plt.imshow(gray_img, cmap='gray')
 
+    """
+    ROI images
+    """
+    roi_images = dicom_info[dicom_info.SeriesDescription == "ROI mask images"].image_path
+    roi_images.head()
+    roi_images = roi_images.apply(lambda x: x.replace('CBIS-DDSM/jpeg', image_dir))
+    roi_images.head()
+    for file in roi_images[0:10]:
+        roi_images_show = PIL.Image.open(file)
+        gray_img = roi_images_show.convert("L")
+        plt.imshow(gray_img, cmap='gray')
 
     print("Stop here")
