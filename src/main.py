@@ -1,16 +1,30 @@
-# This is a sample Python script.
+import os
+import pandas as pd
+import matplotlib.pyplot as plt
+import PIL
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
-
-
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    print_hi('PyCharm')
+    script_dir = os.path.dirname(__file__)
+    data_path = os.path.join(script_dir + "/../data")
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    dicom_info = pd.read_csv(data_path + "/dicom_info.csv")
+    image_dir = data_path + "/jpeg"
+
+    print(dicom_info.head())
+    print(dicom_info.info())
+
+    """
+    Cropped images
+    """
+    cropped_images = dicom_info[dicom_info.SeriesDescription == "cropped images"].image_path
+    cropped_images.head()
+    cropped_images = cropped_images.apply(lambda x: x.replace('CBIS-DDSM/jpeg', image_dir))
+    cropped_images.head()
+    for file in cropped_images[0:10]:
+        cropped_images_show = PIL.Image.open(file)
+        gray_img = cropped_images_show.convert("L")
+        plt.imshow(gray_img, cmap='gray')
+
+
+
+    print("Stop here")
