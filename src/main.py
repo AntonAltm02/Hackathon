@@ -3,6 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import PIL
 import glob
+from keras import backend as K
 
 """
 This CBIS-DDSM (Curated Breast Imaging Subset of DDSM) is an updated and standardized version of the Digital Database 
@@ -18,7 +19,7 @@ Published research results from work in developing decision support systems in m
 due to the lack of a standard evaluation data set; most computer-aided diagnosis (CADx) and detection (CADe) algorithms 
 for breast cancer in mammography are evaluated on private data sets or on unspecified subsets of public databases. 
 Few well-curated public datasets have been provided for the mammography community. These include the DDSM, the 
-Mammographic Imaging Analysis Society (MIAS) database, and the Image Retrieval in Medical Applications (IRMA) project. 
+Mammography Imaging Analysis Society (MIAS) database, and the Image Retrieval in Medical Applications (IRMA) project. 
 Although these public data sets are useful, they are limited in terms of data set size and accessibility.
 
 For example, most researchers using the DDSM do not leverage all its images for a variety of historical reasons. 
@@ -35,7 +36,57 @@ Please note that the image data for this collection is structured such that each
 For example, participant 00038 has 10 separate patient IDs which provide information about the scans within the IDs 
 (e.g. Calc-Test_P_00038_LEFT_CC, Calc-Test_P_00038_RIGHT_CC_1). This makes it appear as though there are 6,671 patients 
 according to the DICOM metadata, but there are only 1,566 actual participants in the cohort.
+
+Kaggle Dataset: https://www.kaggle.com/datasets/awsaf49/cbis-ddsm-breast-cancer-image-dataset?resource=download
+Kaggle Notebook: https://www.kaggle.com/code/baselanaya/breast-cancer-detection-using-cnn/notebook
+DC-UNet: https://github.com/AngeLouCN/DC-UNet/blob/main/main.py
 """
+
+def calcification_data_cleaning():
+    """
+    Calcification data cleaning
+    """
+    calc_case_clean = df_calc_case.copy()
+    calc_case_clean = calc_case_clean.rename(columns={'calc type': 'calc_type'})
+    calc_case_clean = calc_case_clean.rename(columns={'calc distribution': 'calc_distribution'})
+    calc_case_clean = calc_case_clean.rename(columns={'image view': 'image_view'})
+    calc_case_clean = calc_case_clean.rename(columns={'left or right breast': 'left_or_right_breast'})
+    calc_case_clean = calc_case_clean.rename(columns={'breast density': 'breast_density'})
+    calc_case_clean = calc_case_clean.rename(columns={'abnormality type': 'abnormality_type'})
+    calc_case_clean['pathology'] = calc_case_clean['pathology'].astype('category')
+    calc_case_clean['calc_type'] = calc_case_clean['calc_type'].astype('category')
+    calc_case_clean['calc_distribution'] = calc_case_clean['calc_distribution'].astype('category')
+    calc_case_clean['abnormality_type'] = calc_case_clean['abnormality_type'].astype('category')
+    calc_case_clean['image_view'] = calc_case_clean['image_view'].astype('category')
+    calc_case_clean['left_or_right_breast'] = calc_case_clean['left_or_right_breast'].astype('category')
+    calc_case_clean.isna().sum()
+
+    calc_case_clean['calc_type'].fillna(method='bfill', axis=0, inplace=True)
+    calc_case_clean['calc_distribution'].fillna(method='bfill', axis=0, inplace=True)
+    calc_case_clean.isna().sum()
+
+def mass_data_cleaning():
+    """
+    Mass data cleaning
+    """
+    mass_case_clean = df_mass_case.copy()
+    mass_case_clean = mass_case_clean.rename(columns={'mass shape': 'mass_shape'})
+    mass_case_clean = mass_case_clean.rename(columns={'left or right breast': 'left_or_right_breast'})
+    mass_case_clean = mass_case_clean.rename(columns={'mass margins': 'mass_margins'})
+    mass_case_clean = mass_case_clean.rename(columns={'image view': 'image_view'})
+    mass_case_clean = mass_case_clean.rename(columns={'abnormality type': 'abnormality_type'})
+    mass_case_clean['left_or_right_breast'] = mass_case_clean['left_or_right_breast'].astype('category')
+    mass_case_clean['image_view'] = mass_case_clean['image_view'].astype('category')
+    mass_case_clean['mass_margins'] = mass_case_clean['mass_margins'].astype('category')
+    mass_case_clean['mass_shape'] = mass_case_clean['mass_shape'].astype('category')
+    mass_case_clean['abnormality_type'] = mass_case_clean['abnormality_type'].astype('category')
+    mass_case_clean['pathology'] = mass_case_clean['pathology'].astype('category')
+    mass_case_clean.isna().sum()
+
+    mass_case_clean['mass_shape'].fillna(method='bfill', axis=0, inplace=True)
+    mass_case_clean['mass_margins'].fillna(method='bfill', axis=0, inplace=True)
+    mass_case_clean.isna().sum()
+
 
 if __name__ == '__main__':
     script_dir = os.path.dirname(__file__)
@@ -108,46 +159,15 @@ if __name__ == '__main__':
     print(dicom_info_clean.info())
 
     """
-    Calcification data cleaning
+    Training
     """
-    calc_case_clean = df_calc_case.copy()
-    calc_case_clean = calc_case_clean.rename(columns={'calc type': 'calc_type'})
-    calc_case_clean = calc_case_clean.rename(columns={'calc distribution': 'calc_distribution'})
-    calc_case_clean = calc_case_clean.rename(columns={'image view': 'image_view'})
-    calc_case_clean = calc_case_clean.rename(columns={'left or right breast': 'left_or_right_breast'})
-    calc_case_clean = calc_case_clean.rename(columns={'breast density': 'breast_density'})
-    calc_case_clean = calc_case_clean.rename(columns={'abnormality type': 'abnormality_type'})
-    calc_case_clean['pathology'] = calc_case_clean['pathology'].astype('category')
-    calc_case_clean['calc_type'] = calc_case_clean['calc_type'].astype('category')
-    calc_case_clean['calc_distribution'] = calc_case_clean['calc_distribution'].astype('category')
-    calc_case_clean['abnormality_type'] = calc_case_clean['abnormality_type'].astype('category')
-    calc_case_clean['image_view'] = calc_case_clean['image_view'].astype('category')
-    calc_case_clean['left_or_right_breast'] = calc_case_clean['left_or_right_breast'].astype('category')
-    calc_case_clean.isna().sum()
-
-    calc_case_clean['calc_type'].fillna(method='bfill', axis=0, inplace=True)
-    calc_case_clean['calc_distribution'].fillna(method='bfill', axis=0, inplace=True)
-    calc_case_clean.isna().sum()
-
-    """
-    Mass data cleaning
-    """
-    mass_case_clean = df_mass_case.copy()
-    mass_case_clean = mass_case_clean.rename(columns={'mass shape': 'mass_shape'})
-    mass_case_clean = mass_case_clean.rename(columns={'left or right breast': 'left_or_right_breast'})
-    mass_case_clean = mass_case_clean.rename(columns={'mass margins': 'mass_margins'})
-    mass_case_clean = mass_case_clean.rename(columns={'image view': 'image_view'})
-    mass_case_clean = mass_case_clean.rename(columns={'abnormality type': 'abnormality_type'})
-    mass_case_clean['left_or_right_breast'] = mass_case_clean['left_or_right_breast'].astype('category')
-    mass_case_clean['image_view'] = mass_case_clean['image_view'].astype('category')
-    mass_case_clean['mass_margins'] = mass_case_clean['mass_margins'].astype('category')
-    mass_case_clean['mass_shape'] = mass_case_clean['mass_shape'].astype('category')
-    mass_case_clean['abnormality_type'] = mass_case_clean['abnormality_type'].astype('category')
-    mass_case_clean['pathology'] = mass_case_clean['pathology'].astype('category')
-    mass_case_clean.isna().sum()
-
-    mass_case_clean['mass_shape'].fillna(method='bfill', axis=0, inplace=True)
-    mass_case_clean['mass_margins'].fillna(method='bfill', axis=0, inplace=True)
-    mass_case_clean.isna().sum()
+    def dice_coef(y_true, y_pred):
+        smooth = 1.0  # 0.0
+        y_true_f = K.flatten(y_true)
+        y_pred_f = K.flatten(y_pred)
+        intersection = K.sum(y_true_f * y_pred_f)
+        return (2. * intersection + smooth) / (K.sum(y_true_f) + K.sum(y_pred_f) + smooth)
+    def dice_coef_loss(y_true, y_pred):
+        return 1 - dice_coef(y_true, y_pred)
 
     print("Stop here")
