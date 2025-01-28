@@ -89,6 +89,26 @@ def mass_data_cleaning():
     mass_case_clean['mass_margins'].fillna(method='bfill', axis=0, inplace=True)
     mass_case_clean.isna().sum()
 
+    def get_images(img_type, show_img):
+        """
+        This function gets all the images from the dicom folder based on the specified image type
+        :param show_img: boolean parameter whether the images should be shown or not
+        :param img_type:  might be set to "cropped images", "full mammogram images" or "ROI mask images"
+        :return:
+        """
+        images = dicom_info[dicom_info.SeriesDescription == "cropped images"].image_path
+        images.head()
+        images = images.apply(lambda x: x.replace('CBIS-DDSM/jpeg', image_dir))
+        images.head()
+        for file in images[0:10]:
+            images_show = PIL.Image.open(file)
+            gray_img = images_show.convert("L")
+            plt.imshow(gray_img, cmap='gray')
+            plt.title("Cropped Image")
+            if show_img:
+                plt.show()
+        return images
+
 
 if __name__ == '__main__':
     script_dir = os.path.dirname(__file__)
@@ -99,42 +119,6 @@ if __name__ == '__main__':
 
     print(dicom_info.head())
     print(dicom_info.info())
-
-    """
-    Cropped images
-    """
-    cropped_images = dicom_info[dicom_info.SeriesDescription == "cropped images"].image_path
-    cropped_images.head()
-    cropped_images = cropped_images.apply(lambda x: x.replace('CBIS-DDSM/jpeg', image_dir))
-    cropped_images.head()
-    for file in cropped_images[0:10]:
-        cropped_images_show = PIL.Image.open(file)
-        gray_img = cropped_images_show.convert("L")
-        plt.imshow(gray_img, cmap='gray')
-
-    """
-    Full images
-    """
-    full_images = dicom_info[dicom_info.SeriesDescription == "full mammogram images"].image_path
-    full_images.head()
-    full_images = full_images.apply(lambda x: x.replace('CBIS-DDSM/jpeg', image_dir))
-    full_images.head()
-    for file in full_images[0:10]:
-        full_images_show = PIL.Image.open(file)
-        gray_img = full_images_show.convert("L")
-        plt.imshow(gray_img, cmap='gray')
-
-    """
-    ROI images
-    """
-    roi_images = dicom_info[dicom_info.SeriesDescription == "ROI mask images"].image_path
-    roi_images.head()
-    roi_images = roi_images.apply(lambda x: x.replace('CBIS-DDSM/jpeg', image_dir))
-    roi_images.head()
-    for file in roi_images[0:10]:
-        roi_images_show = PIL.Image.open(file)
-        gray_img = roi_images_show.convert("L")
-        plt.imshow(gray_img, cmap='gray')
 
     """
     Calcification and mass data cases
