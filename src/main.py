@@ -1,11 +1,12 @@
-import os
 import pandas as pd
 import matplotlib.pyplot as plt
 import PIL
 from model import DCUNet
-from keras import backend as K
+from evaluation import tversky, tversky_loss, focal_tversky, dice_coef, dice_coef_loss, jacard
 import numpy as np
 from sklearn.model_selection import train_test_split
+import os
+os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 
 """
 This CBIS-DDSM (Curated Breast Imaging Subset of DDSM) is an updated and standardized version of the Digital Database 
@@ -89,25 +90,25 @@ def mass_data_cleaning():
     mass_case_clean['mass_margins'].fillna(method='bfill', axis=0, inplace=True)
     mass_case_clean.isna().sum()
 
-    def get_images(img_type, show_img):
-        """
-        This function gets all the images from the dicom folder based on the specified image type
-        :param show_img: boolean parameter whether the images should be shown or not
-        :param img_type:  might be set to "cropped images", "full mammogram images" or "ROI mask images"
-        :return:
-        """
-        images = dicom_info[dicom_info.SeriesDescription == "cropped images"].image_path
-        images.head()
-        images = images.apply(lambda x: x.replace('CBIS-DDSM/jpeg', image_dir))
-        images.head()
-        for file in images[0:10]:
-            images_show = PIL.Image.open(file)
-            gray_img = images_show.convert("L")
-            plt.imshow(gray_img, cmap='gray')
-            plt.title("Cropped Image")
-            if show_img:
-                plt.show()
-        return images
+def get_images(img_type, show_img):
+    """
+    This function gets all the images from the dicom folder based on the specified image type
+    :param show_img: boolean parameter whether the images should be shown or not
+    :param img_type:  might be set to "cropped images", "full mammogram images" or "ROI mask images"
+    :return:
+    """
+    images = dicom_info[dicom_info.SeriesDescription == "cropped images"].image_path
+    images.head()
+    images = images.apply(lambda x: x.replace('CBIS-DDSM/jpeg', image_dir))
+    images.head()
+    for file in images[0:10]:
+        images_show = PIL.Image.open(file)
+        gray_img = images_show.convert("L")
+        plt.imshow(gray_img, cmap='gray')
+        plt.title("Cropped Image")
+        if show_img:
+            plt.show()
+    return images
 
 
 if __name__ == '__main__':
@@ -144,46 +145,6 @@ if __name__ == '__main__':
     dicom_info_clean["SeriesDescription"].fillna(method="backfill", axis=0, inplace=True)
     print(dicom_info_clean.info())
 
-    """
-    Loss functions
-    """
-    def dice_coef(y_true, y_pred):
-        smooth = 1.0  # 0.0
-        y_true_f = K.flatten(y_true)
-        y_pred_f = K.flatten(y_pred)
-        intersection = K.sum(y_true_f * y_pred_f)
-        return (2. * intersection + smooth) / (K.sum(y_true_f) + K.sum(y_pred_f) + smooth)
-
-    def jacard(y_true, y_pred):
-
-        y_true_f = K.flatten(y_true)
-        y_pred_f = K.flatten(y_pred)
-        intersection = K.sum(y_true_f * y_pred_f)
-        union = K.sum(y_true_f + y_pred_f - y_true_f * y_pred_f)
-
-        return intersection / union
-
-    def dice_coef_loss(y_true, y_pred):
-        return 1 - dice_coef(y_true, y_pred)
-
-    def iou_loss(y_true, y_pred):
-        return 1 - jacard(y_true, y_pred)
-
-    def tversky(y_true, y_pred):
-        y_true_pos = K.flatten(y_true)
-        y_pred_pos = K.flatten(y_pred)
-        true_pos = K.sum(y_true_pos * y_pred_pos)
-        false_neg = K.sum(y_true_pos * (1 - y_pred_pos))
-        false_pos = K.sum((1 - y_true_pos) * y_pred_pos)
-        alpha = 0.75
-        smooth = 1
-        return (true_pos + smooth) / (true_pos + alpha * false_neg + (1 - alpha) * false_pos + smooth)
-    def tversky_loss(y_true, y_pred):
-        return 1 - tversky(y_true, y_pred)
-    def focal_tversky(y_true, y_pred):
-        pt_1 = tversky(y_true, y_pred)
-        gamma = 0.75
-        return K.pow((1 - pt_1), gamma)
 
     """
     Training and Evaluation
