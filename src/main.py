@@ -1,6 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
-import PIL
+from process import get_images
 from model import DCUNet
 from evaluation import tversky, tversky_loss, focal_tversky, dice_coef, dice_coef_loss, jacard
 import numpy as np
@@ -9,6 +9,27 @@ import os
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 
 """
+DC-UNet - Rethinking the U-Net Architecture with Dual Channel Efficient CNN for Medical Images Segmentation:
+
+Recently, deep learning has become much more popular in computer vision area. The Convolution Neural Network (CNN) has 
+brought a breakthrough in images segmentation areas, especially, for medical images. In this regard, U-Net is the 
+predominant approach to medical image segmentation task. The U-Net not only performs well in segmenting multimodal 
+medical images generally, but also in some tough cases of them. However, we found that the classical U-Net architecture
+has limitation in several aspects. Therefore, we applied modifications: 1) designed efficient CNN architecture to 
+replace encoder and decoder, 2) applied residual module to replace skip connection between encoder and decoder to 
+improve based on the-state-of-the-art U-Net model. Following these modifications, we designed a novel 
+architecture--DC-UNet, as a potential successor to the U-Net architecture. We created a new effective CNN architecture 
+and build the DC-UNet based on this CNN. We have evaluated our model on three datasets with tough cases and have 
+obtained a relative improvement in performance of 2.90%, 1.49% and 11.42% respectively compared with classical U-Net. 
+In addition, we used the Tanimoto similarity to replace the Jaccard similarity for gray-to-gray image comparisons.
+
+Paper: https://arxiv.org/abs/2006.00414
+GitHub: https://github.com/AngeLouCN/DC-UNet
+
+------------------------------------------------------------------------------------------------------------------------
+
+CBIS-DDSM - Curated Breast Imaging Subset of DDSM:
+
 This CBIS-DDSM (Curated Breast Imaging Subset of DDSM) is an updated and standardized version of the Digital Database 
 for Screening Mammography (DDSM). The DDSM is a database of 2,620 scanned film mammography studies. It contains normal, 
 benign, and malignant cases with verified pathology information. The scale of the database along with ground truth 
@@ -40,9 +61,26 @@ For example, participant 00038 has 10 separate patient IDs which provide informa
 (e.g. Calc-Test_P_00038_LEFT_CC, Calc-Test_P_00038_RIGHT_CC_1). This makes it appear as though there are 6,671 patients 
 according to the DICOM metadata, but there are only 1,566 actual participants in the cohort.
 
-Kaggle Dataset: https://www.kaggle.com/datasets/awsaf49/cbis-ddsm-breast-cancer-image-dataset?resource=download
-Kaggle Notebook: https://www.kaggle.com/code/baselanaya/breast-cancer-detection-using-cnn/notebook
-DC-UNet: https://github.com/AngeLouCN/DC-UNet/blob/main/main.py
+Dataset: https://www.kaggle.com/datasets/awsaf49/cbis-ddsm-breast-cancer-image-dataset?resource=download
+Notebook: https://www.kaggle.com/code/baselanaya/breast-cancer-detection-using-cnn/notebook
+
+------------------------------------------------------------------------------------------------------------------------
+
+BC-MRI-SEG - A Breast Cancer MRI Tumor Segmentation Benchmark:
+
+Binary breast cancer tumor segmentation with Magnetic Resonance Imaging (MRI) data is typically trained and evaluated 
+on private medical data, which makes comparing deep learning approaches difficult. We propose a benchmark (BC-MRI-SEG) 
+for binary breast cancer tumor segmentation based on publicly available MRI datasets. The benchmark consists of four 
+datasets in total, where two datasets are used for supervised training and evaluation, and two are used for zero-shot 
+evaluation. Additionally we compare state-of-the-art (SOTA) approaches on our benchmark and provide an exhaustive list 
+of available public breast cancer MRI datasets. 
+Dataset Links: 
+- RIDER: https://wiki.cancerimagingarchive.net/display/Public/RIDER+Breast+MRI
+- BreastDM: https://github.com/smallboy-code/Breast-cancer-dataset
+- ISPY1: https://wiki.cancerimagingarchive.net/pages/viewpage.action?pageId=101942541#101942541215b684587f64c8cab1ffc45cd63f339
+- DUKE: https://www.cancerimagingarchive.net/collection/duke-breast-cancer-mri/
+
+Dataset: https://arxiv.org/html/2404.13756v1#S3
 """
 
 
@@ -55,6 +93,11 @@ if __name__ == '__main__':
 
     print(dicom_info.head())
     print(dicom_info.info())
+
+    full_mammogram_images = get_images(img_type="full mammogram images", image_dir=image_dir,
+                                       show_img=False, dicom_info=dicom_info)
+    ROI_images = get_images(img_type="ROI mask images", image_dir=image_dir,
+                                       show_img=False, dicom_info=dicom_info)
 
     """
     Calcification and mass data cases
@@ -169,8 +212,8 @@ if __name__ == '__main__':
 
         return model
 
-    X = np.array((2000, 250, 250))
-    Y = np.array((2000, 250, 250))
+    X = np.array((2000, 249, 249))
+    Y = np.array((2000, 249, 249))
     X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2, random_state=5)
 
     model = DCUNet(height=250, width=250, channels=1)
