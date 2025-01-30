@@ -69,10 +69,10 @@ Dataset: https://arxiv.org/html/2404.13756v1#S3
 
 ## Model Architecture
 
-Single-cell classifier: 
+### Single-cell classifier: 
 
 ### Image segmentation model:
-DC-UNet - Rethinking the U-Net Architecture with Dual Channel Efficient CNN for Medical Images Segmentation:
+#### DC-UNet - Rethinking the U-Net Architecture with Dual Channel Efficient CNN for Medical Images Segmentation:
 
 Recently, deep learning has become much more popular in computer vision area. The Convolution Neural Network (CNN) has 
 brought a breakthrough in images segmentation areas, especially, for medical images. In this regard, U-Net is the 
