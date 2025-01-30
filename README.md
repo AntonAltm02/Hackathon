@@ -17,38 +17,19 @@ Single-cell data: [Dataset source or link]
 ### Medical images:
 #### CBIS-DDSM - Curated Breast Imaging Subset of DDSM:
 
-This CBIS-DDSM (Curated Breast Imaging Subset of DDSM) is an updated and standardized version of the Digital Database 
-for Screening Mammography (DDSM). The DDSM is a database of 2,620 scanned film mammography studies. It contains normal, 
-benign, and malignant cases with verified pathology information. The scale of the database along with ground truth 
-validation makes the DDSM a useful tool in the development and testing of decision support systems. The CBIS-DDSM 
-collection includes a subset of the DDDSM data selected and curated by a trained mammographer. The images have been 
-decompressed and converted to DICOM format. Updated ROI segmentation and bounding boxes, and pathologic diagnosis for 
-training data are also included. A manuscript describing how to use this dataset in detail is available at 
-https://www.nature.com/articles/sdata2017177.
+This CBIS-DDSM (Curated Breast Imaging Subset of DDSM) is an updated and standardized version of the Digital Database for Screening Mammography (DDSM). The DDSM is a database of 2,620 scanned film mammography studies. It contains normal, benign, and malignant cases with verified pathology information. The scale of the database along with ground truth validation makes the DDSM a useful tool in the development and testing of decision support systems. The CBIS-DDSM collection includes a subset of the DDDSM data selected and curated by a trained mammographer. The images have been decompressed and converted to DICOM format. Updated ROI segmentation and bounding boxes, and pathologic diagnosis for training data are also included (https://www.nature.com/articles/sdata2017177).
 
-Published research results from work in developing decision support systems in mammography are difficult to replicate 
-due to the lack of a standard evaluation data set; most computer-aided diagnosis (CADx) and detection (CADe) algorithms 
-for breast cancer in mammography are evaluated on private data sets or on unspecified subsets of public databases. 
-Few well-curated public datasets have been provided for the mammography community. These include the DDSM, the 
-Mammography Imaging Analysis Society (MIAS) database, and the Image Retrieval in Medical Applications (IRMA) project. 
-Although these public data sets are useful, they are limited in terms of data set size and accessibility.
-
-For example, most researchers using the DDSM do not leverage all its images for a variety of historical reasons. 
-When the database was released in 1997, computational resources to process hundreds or thousands of images were not 
-widely available. Additionally, the DDSM images are saved in non-standard compression files that require the use of 
-decompression code that has not been updated or maintained for modern computers. Finally, the ROI annotations for the 
-abnormalities in the DDSM were provided to indicate a general position of lesions, but not a precise segmentation for 
-them. Therefore, many researchers must implement segmentation algorithms for accurate feature extraction. This causes 
-an inability to directly compare the performance of methods or to replicate prior results. The CBIS-DDSM collection 
-addresses that challenge by publicly releasing a curated and standardized version of the DDSM for evaluation of future 
-CADx and CADe systems (sometimes referred to generally as CAD) research in mammography.
-
-Please note that the image data for this collection is structured such that each participant has multiple patient IDs. 
-For example, participant 00038 has 10 separate patient IDs which provide information about the scans within the IDs 
-(e.g. Calc-Test_P_00038_LEFT_CC, Calc-Test_P_00038_RIGHT_CC_1). This makes it appear as though there are 6,671 patients 
-according to the DICOM metadata, but there are only 1,566 actual participants in the cohort.
+Please note that the image data for this collection is structured such that each participant has multiple patient IDs. For example, participant 00038 has 10 separate patient IDs which provide information about the scans within the IDs (e.g. Calc-Test_P_00038_LEFT_CC, Calc-Test_P_00038_RIGHT_CC_1). This makes it appear as though there are 6,671 patients according to the DICOM metadata, but there are only 1,566 actual participants in the cohort.
 Dataset: https://www.kaggle.com/datasets/awsaf49/cbis-ddsm-breast-cancer-image-dataset?resource=download
 Notebook: https://www.kaggle.com/code/baselanaya/breast-cancer-detection-using-cnn/notebook
+
+#### A Multi-million Mammography Image Dataset and Population-Based Screening Cohort for the Training and Evaluation of Deep Neural Networks-the Cohort of Screen-Aged Women (CSAW)
+
+For AI researchers, access to a large and well-curated dataset is crucial. Working in the field of breast radiology, our aim was to develop a high-quality platform that can be used for evaluation of networks aiming to predict breast cancer risk, estimate mammographic sensitivity, and detect tumors. Our dataset, Cohort of Screen-Aged Women (CSAW), is a population-based cohort of all women 40 to 74 years of age invited to screening in the Stockholm region, Sweden, between 2008 and 2015. All women were invited to mammography screening every 18 to 24 months free of charge. Images were collected from the PACS of the three breast centers that completely cover the region. DICOM metadata were collected together with the images. Screening decisions and clinical outcome data were collected by linkage to the regional cancer center registers. Incident cancer cases, from one center, were pixel-level annotated by a radiologist. A separate subset for efficient evaluation of external networks was defined for the uptake area of one center. The collection and use of the dataset for the purpose of AI research has been approved by the Ethical Review Board. CSAW included 499,807 women invited to screening between 2008 and 2015 with a total of 1,182,733 completed screening examinations. Around 2 million mammography images have currently been collected, including all images for women who developed breast cancer. There were 10,582 women diagnosed with breast cancer; for 8463, it was their first breast cancer. Clinical data include biopsy-verified breast cancer diagnoses, histological origin, tumor size, lymph node status, Elston grade, and receptor status. One thousand eight hundred ninety-one images of 898 women had tumors pixel level annotated including any tumor signs in the prior negative screening mammogram. Our dataset has already been used for evaluation by several research groups. We have defined a high-volume platform for training and evaluation of deep neural networks in the domain of mammographic imaging (https://pubmed.ncbi.nlm.nih.gov/31520277/).
+
+#### VinDr-Mammo: A large-scale benchmark dataset for computer-aided diagnosis in full-field digital mammography
+
+Mammography, or breast X-ray imaging, is the most widely used imaging modality to detect cancer and other breast diseases. Recent studies have shown that deep learning-based computer-assisted detection and diagnosis (CADe/x) tools have been developed to support physicians and improve the accuracy of interpreting mammography. A number of large-scale mammography datasets from different populations with various associated annotations and clinical data have been introduced to study the potential of learning-based methods in the field of breast radiology. With the aim to develop more robust and more interpretable support systems in breast imaging, we introduce VinDr-Mammo, a Vietnamese dataset of digital mammography with breast-level assessment and extensive lesion-level annotations, enhancing the diversity of the publicly available mammography data. The dataset consists of 5,000 mammography exams, each of which has four standard views and is double read with disagreement (if any) being resolved by arbitration. The purpose of this dataset is to assess Breast Imaging Reporting and Data System (BI-RADS) and breast density at the individual breast level. In addition, the dataset also provides the category, location, and BI-RADS assessment of non-benign findings. We make VinDr-Mammo publicly available as a new imaging resource to promote advances in developing CADe/x tools for mammography interpretation (https://pubmed.ncbi.nlm.nih.gov/31520277/).
 
 #### BC-MRI-SEG - A Breast Cancer MRI Tumor Segmentation Benchmark:
 
@@ -57,15 +38,12 @@ on private medical data, which makes comparing deep learning approaches difficul
 for binary breast cancer tumor segmentation based on publicly available MRI datasets. The benchmark consists of four 
 datasets in total, where two datasets are used for supervised training and evaluation, and two are used for zero-shot 
 evaluation. Additionally we compare state-of-the-art (SOTA) approaches on our benchmark and provide an exhaustive list 
-of available public breast cancer MRI datasets. 
+of available public breast cancer MRI datasets (https://arxiv.org/html/2404.13756v1#S3)
 Dataset Links: 
 - RIDER: https://wiki.cancerimagingarchive.net/display/Public/RIDER+Breast+MRI
 - BreastDM: https://github.com/smallboy-code/Breast-cancer-dataset
 - ISPY1: https://wiki.cancerimagingarchive.net/pages/viewpage.action?pageId=101942541#101942541215b684587f64c8cab1ffc45cd63f339
 - DUKE: https://www.cancerimagingarchive.net/collection/duke-breast-cancer-mri/
-
-Dataset: https://arxiv.org/html/2404.13756v1#S3
-
 
 ## Model Architecture
 
