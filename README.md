@@ -15,6 +15,20 @@ This repository hosts a dual-model approach for breast cancer research, focusing
 Single-cell data: [Dataset source or link]
 
 ### Medical images:
+
+#### DDSM - Digital Database for Screening Mammography
+
+This dataset consists of images from the DDSM [1] and CBIS-DDSM [3] datasets. The images have been pre-processed and converted to 299x299 images by extracting the ROIs. The data is stored as tfrecords files for TensorFlow.
+The dataset contains 55,890 training examples, of which 14% are positive and the remaining 86% negative, divided into 5 tfrecords files. The data has been separated into training and test as per the division in the CBIS-DDSM dataset. The test files have been divided equally into test and validation data. However the split between test and validation data was done incorrectly, resulted in the test numpy files containing only masses and the validation files containing only calcifications. These files should be combined in order to have balanced and complete test data.
+
+The dataset consists of negative images from the DDSM dataset and positive images from the CBIS-DDSM dataset. The data was pre-processed to convert it into 299x299 images. The negative (DDSM) images were tiled into 598x598 tiles, which were then resized to 299x299. The positive (CBIS-DDSM) images had their ROIs extracted using the masks with a small amount of padding to provide context. Each ROI was then randomly cropped three times into 598x598 images, with random flips and rotations, and then the images were resized down to 299x299.
+
+The images are labeled with two labels:
++ label_normal - 0 for negative and 1 for positive
++ label - full multi-class labels, 0 is negative, 1 is benign calcification, 2 is benign mass, 3 is malignant calcification, 4 is malignant mass
+
+Dataset: https://www.kaggle.com/datasets/skooch/ddsm-mammography
+
 #### CBIS-DDSM - Curated Breast Imaging Subset of DDSM:
 
 This CBIS-DDSM (Curated Breast Imaging Subset of DDSM) is an updated and standardized version of the Digital Database for Screening Mammography (DDSM). The DDSM is a database of 2,620 scanned film mammography studies. It contains normal, benign, and malignant cases with verified pathology information. The scale of the database along with ground truth validation makes the DDSM a useful tool in the development and testing of decision support systems. The CBIS-DDSM collection includes a subset of the DDDSM data selected and curated by a trained mammographer. The images have been decompressed and converted to DICOM format. Updated ROI segmentation and bounding boxes, and pathologic diagnosis for training data are also included (https://www.nature.com/articles/sdata2017177).
