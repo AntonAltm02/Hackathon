@@ -80,4 +80,23 @@ In addition, we used the Tanimoto similarity to replace the Jaccard similarity f
 Paper: https://arxiv.org/abs/2006.00414
 GitHub: https://github.com/AngeLouCN/DC-UNet
 
+### Image Classifcation Model:
+#### EfficientNetV2:
+
+EfficientNetV2, a new family of convolutional networks, have faster
+training speed and better parameter efficiency  than previous models. To develop these models, a combination of 
+training-aware neural architecture search and scaling is used, to jointly optimize
+training speed and parameter efficiency. The models were searched from the search space enriched
+with new ops such as Fused-MBConv. Our experiments show that EfficientNetV2 models train
+much faster than state-of-the-art models while
+being up to 6.8x smaller.
+Our training can be further sped up by progressively increasing the image size during training,
+but it often causes a drop in accuracy. To compensate for this accuracy drop, we propose an
+improved method of progressive learning, which adaptively adjusts regularization (e.g. data augmentation) along with image size.
+With progressive learning, our EfficientNetV2 significantly outperforms previous models on ImageNet and CIFAR/Cars/Flowers datasets. By
+pretraining on the same ImageNet21k, our EfficientNetV2 achieves 87.3% top-1 accuracy on
+ImageNet ILSVRC2012, outperforming the recent ViT by 2.0% accuracy while training 5x-11x
+faster using the same computing resources.
+
+
 ## Results
