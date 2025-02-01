@@ -34,7 +34,7 @@ if __name__ == '__main__':
     # dcunet.summary()
 
     effnetV2 = efficientNet.effnetv2_s()
-    effnetV2.summary()
+    # effnetV2.summary()
 
     evaluation.trainStep(effnetV2, X_train, Y_train, X_test, Y_test, epochs=150, batchSize=4)
 
