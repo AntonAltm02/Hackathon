@@ -2,6 +2,7 @@ import pandas as pd
 import evaluation
 from process import get_images
 from DCUNet import DCUNet
+import efficientNet
 from evaluation import tversky, tversky_loss, focal_tversky, dice_coef, dice_coef_loss, jacard
 import numpy as np
 from sklearn.model_selection import train_test_split
@@ -28,10 +29,13 @@ if __name__ == '__main__':
     Y = np.array((2000, 249, 249))
     X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2, random_state=5)
 
-    model = DCUNet(height=250, width=250, channels=1)
-    model.compile(optimizer='adam', loss=focal_tversky, metrics=[dice_coef, jacard, 'accuracy'])
-    model.summary()
+    dcunet = DCUNet(height=250, width=250, channels=1)
+    dcunet.compile(optimizer='adam', loss=focal_tversky, metrics=[dice_coef, jacard, 'accuracy'])
+    dcunet.summary()
 
-    evaluation.trainStep(model, X_train, Y_train, X_test, Y_test, epochs=150, batchSize=4)
+    effnetV2 = efficientNet.effnetv2_s()
+    effnetV2.summary()
+
+    evaluation.trainStep(effnetV2, X_train, Y_train, X_test, Y_test, epochs=150, batchSize=4)
 
     print("Stop here")
