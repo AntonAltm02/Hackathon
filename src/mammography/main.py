@@ -147,7 +147,7 @@ if __name__ == '__main__':
                 #     X_batch, Y_batch = X_batch.to(), Y_batch.to()
 
                 # Forward pass
-                outputs = model(X_batch.unsqueeze(1))
+                outputs = model(X_batch)
                 loss2 = criterion(outputs, Y_batch.long())
                 total_loss += loss2.item()
 
