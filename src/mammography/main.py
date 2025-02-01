@@ -63,7 +63,6 @@ if __name__ == '__main__':
     model.eval()
     dataset_test = TensorDataset(X_test, Y_test)  # Wrap tensor in a dataset
     dataloader_test = DataLoader(dataset_test, batch_size=batch_size, shuffle=True)
-
     total_loss = 0.0
     all_preds = []
     all_labels = []
@@ -73,10 +72,12 @@ if __name__ == '__main__':
             if torch.cuda.is_available():
                 X_batch, Y_batch = X_batch.to(), Y_batch.to()
 
+            # Forward pass
             outputs = model(X_batch)
             loss = criterion(outputs, Y_batch)
             total_loss += loss.item()
 
+            # Convert outputs to predictions
             preds = torch.argmax(outputs, dim=1)
             all_preds.extend(preds.cpu().numpy())
             all_labels.extend(labels.cpu().numpy())
