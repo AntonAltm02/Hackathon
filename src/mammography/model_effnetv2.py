@@ -1,7 +1,7 @@
 import torch
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
-from helper import train_model, SimpleCNN, validate_model, CLAHE
+# from helper import train_model, SimpleCNN, validate_model, CLAHE
 import torch.nn as nn
 import pandas as pd
 from PIL import Image
@@ -13,7 +13,7 @@ import torch.nn.functional as F
 import torch
 from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
-from helper import train_model, SimpleCNN, validate_model, CLAHE, BRIGHNESS
+# from helper import train_model, SimpleCNN, validate_model, CLAHE, BRIGHNESS
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
@@ -36,7 +36,7 @@ import torch.nn.functional as F
 import torch
 from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
-from helper import train_model, SimpleCNN, validate_model, CLAHE,  validate_model2
+# from helper import train_model, SimpleCNN, validate_model, CLAHE,  validate_model2
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
@@ -276,9 +276,9 @@ class EfficientNetV2(nn.Module):
                                 nn.Linear(in_features=1280,out_features=2048),
                                 nn.ReLU(),
                                 nn.Dropout(p=0.6),
-                                nn.Linear(in_features=2048,out_features=2048),
+                                nn.Linear(in_features=2048,out_features=512),
                                 nn.ReLU(),
-                                nn.Linear(in_features=2048,out_features=1000),
+                                nn.Linear(in_features=512,out_features=5),
                             ) if nclass else nn.Identity())
         ]))
 
