@@ -1,7 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 from process import get_images
-from model import DCUNet
+from DCUNet import DCUNet
 from evaluation import tversky, tversky_loss, focal_tversky, dice_coef, dice_coef_loss, jacard
 import numpy as np
 from sklearn.model_selection import train_test_split
